@@ -20,23 +20,26 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 # Trackpad                                                                     #
 ################################################################################
 
-defaults write com.apple.AppleMultitouchTrackpad ActuateDetents -int 0
-defaults write com.apple.AppleMultitouchTrackpad Clicking -bool false
-defaults write com.apple.AppleMultitouchTrackpad SecondClickThreshold -int 0
-defaults write com.apple.AppleMultitouchTrackpad TrackpadCornerSecondaryClick -int 0
-defaults write com.apple.AppleMultitouchTrackpad TrackpadRightClick -bool true
 
-defaults write com.apple.dock showDesktopGestureEnabled -bool true
+defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
+defaults write com.apple.AppleMultitouchTrackpad FirstClickThreshold -int 0
+defaults write com.apple.AppleMultitouchTrackpad SecondClickThreshold -int 0
+
+defaults write com.apple.AppleMultitouchTrackpad TrackpadCornerSecondaryClick -int 0
+defaults write com.apple.AppleMultitouchTrackpad TrackpadRightClick -bool false
+defaults write com.apple.AppleMultitouchTrackpad ActuationStrength -bool false
+defaults write com.apple.AppleMultitouchTrackpad ForceSuppressed -bool false
+
+
 defaults write com.apple.dock showLaunchpadGestureEnabled -bool true
 
-defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool false
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadCornerSecondaryClick -int 0
-defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadRightClick -bool true
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadRightClick -bool false
 
-defaults write NSGlobalDomain "com.apple.swipescrolldirection" -bool true
-defaults write NSGlobalDomain "com.apple.trackpad.forceClick" -bool false
-defaults write NSGlobalDomain "com.apple.trackpad.scaling" -float 0.6875
-defaults write NSGlobalDomain AppleEnableSwipeNavigateWithScrolls -bool false
+
+
+defaults write NSGlobalDomain "com.apple.trackpad.scaling" -float 3.0
 defaults write NSGlobalDomain ContextMenuGesture -int 1
 
 # Disable automatic capitalization as it’s annoying when typing code
@@ -54,9 +57,14 @@ sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText "
 
 
 
+defaults delete ~/Library/Preferences/com.apple.HIToolbox AppleEnabledInputSources
+defaults write ~/Library/Preferences/com.apple.HIToolbox AppleEnabledInputSources -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>252</integer><key>KeyboardLayout Name</key><string>ABC</string></dict>'
+defaults write ~/Library/Preferences/com.apple.HIToolbox AppleEnabledInputSources -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>19458</integer><key>KeyboardLayout Name</key><string>RussianWin</string></dict>'
+
+
 defaults delete com.apple.HIToolbox AppleEnabledInputSources
-defaults write com.apple.HIToolbox AppleEnabledInputSources -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>252</integer><key>Keyboard Layout Name</key><string>ABC</string></dict>'
-defaults write com.apple.HIToolbox AppleEnabledInputSources -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>19458</integer><key>Keyboard Layout Name</key><string>RussianWin</string></dict>'
+defaults write com.apple.HIToolbox AppleEnabledInputSources -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>252</integer><key>KeyboardLayout Name</key><string>ABC</string></dict>'
+defaults write com.apple.HIToolbox AppleEnabledInputSources -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>19458</integer><key>KeyboardLayout Name</key><string>RussianWin</string></dict>'
 
 # Turn off keyboard illumination when computer is not used for 10 sec
 defaults write com.apple.BezelServices kDimTime -int 10
