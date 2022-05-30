@@ -1,101 +1,239 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-# Install command-line tools using Homebrew.
 
-# Ask for the administrator password upfront.
+# chmod +x ./setup.sh
+# ./setup.sh
+
+echo "Ask for the administrator password for the duration of this script"
+# LockScreen: Set Lock Message to show on login screen
 sudo -v
 
-# Keep-alive: update existing `sudo` time stamp until the script has finished.
-while true; do
-    sudo -n true
-    sleep 60
-    kill -0 "$$" || exit
-done 2>/dev/null &
+echo " Keep-alive: update existing sudo time stamp until .osx has finished"
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
-# Setup Finder Commands
-# Show Library Folder in Finder
-chflags nohidden ~/Library
+# Still changing this for my own laptop, but this one seemed to have the best bones.
 
-# Show Hidden Files in Finder
-defaults write com.apple.finder AppleShowAllFiles YES
+# echo "Write MacBook Name and press enter"
+# read HOSTNAME
 
-# Show Path Bar in Finder
-defaults write com.apple.finder ShowPathbar -bool true
+################################################################################
+# Trackpad                                                                     #
+################################################################################
 
-# Show Status Bar in Finder
-defaults write com.apple.finder ShowStatusBar -bool true
+defaults write com.apple.AppleMultitouchTrackpad ActuateDetents -int 0
+defaults write com.apple.AppleMultitouchTrackpad Clicking -bool false
+defaults write com.apple.AppleMultitouchTrackpad SecondClickThreshold -int 0
+defaults write com.apple.AppleMultitouchTrackpad TrackpadCornerSecondaryClick -int 0
+defaults write com.apple.AppleMultitouchTrackpad TrackpadRightClick -bool true
 
-# Check for Homebrew, and then install it
-if test ! "$(which brew)"; then
-    echo "Installing homebrew..."
-    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-    echo "Homebrew installed successfully"
+defaults write com.apple.dock showDesktopGestureEnabled -bool true
+defaults write com.apple.dock showLaunchpadGestureEnabled -bool true
+
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool false
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadCornerSecondaryClick -int 0
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadRightClick -bool true
+
+defaults write NSGlobalDomain "com.apple.swipescrolldirection" -bool true
+defaults write NSGlobalDomain "com.apple.trackpad.forceClick" -bool false
+defaults write NSGlobalDomain "com.apple.trackpad.scaling" -float 0.6875
+defaults write NSGlobalDomain AppleEnableSwipeNavigateWithScrolls -bool false
+defaults write NSGlobalDomain ContextMenuGesture -int 1
+
+# Disable automatic capitalization as it’s annoying when typing code
+defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
+
+# Search scope
+# This Mac       : SCev
+# Current Folder : SCcf
+# Previous Scope : SCsp
+defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+
+
+
+sudo defaults write /Library/Preferences/com.apple.loginwindow LoginwindowText "Написать мне: t.me/r_msg или williampuh@gmail.com"
+
+
+
+defaults delete com.apple.HIToolbox AppleEnabledInputSources
+defaults write com.apple.HIToolbox AppleEnabledInputSources -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>252</integer><key>Keyboard Layout Name</key><string>ABC</string></dict>'
+defaults write com.apple.HIToolbox AppleEnabledInputSources -array-add '<dict><key>InputSourceKind</key><string>Keyboard Layout</string><key>KeyboardLayout ID</key><integer>19458</integer><key>Keyboard Layout Name</key><string>RussianWin</string></dict>'
+
+# Turn off keyboard illumination when computer is not used for 10 sec
+defaults write com.apple.BezelServices kDimTime -int 10
+
+
+# Increase sound quality for Bluetooth headphones/headsets
+defaults write com.apple.BluetoothAudioAgent "Apple Bitpool Min (editable)" -int 40
+
+# Visualize CPU usage in the Activity Monitor Dock icon
+defaults write com.apple.ActivityMonitor IconType -int 5
+
+# Show all processes in Activity Monitor
+defaults write com.apple.ActivityMonitor ShowCategory -int 0
+
+
+# Require password immediately after sleep or screen saver begins
+defaults write com.apple.screensaver askForPassword -int 1
+defaults write com.apple.screensaver askForPasswordDelay -int 0
+
+
+# Whether icons for HDD, servers, and removable media should show on the desktop
+defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool false
+defaults write com.apple.finder ShowHardDrivesOnDesktop -bool false
+defaults write com.apple.finder ShowMountedServersOnDesktop -bool false
+defaults write com.apple.finder ShowRemovableMediaOnDesktop -bool false
+
+
+# Использовать Caps Lock для переключения раскладки
+defaults write NSGlobalDomain TISRomanSwitchState -bool yes
+
+# Keep folders on top when sorting by name
+defaults write com.apple.finder _FXSortFoldersFirst -bool true
+# Keep folders on top when sorting by name
+defaults write com.apple.finder _FXSortFoldersFirstOnDesktop -bool true
+
+
+
+defaults write ~/Library/Preferences/ByHost/com.apple.controlcenter Battery -int 2
+defaults write com.apple.controlcenter "NSStatusItem Visible Battery" -int 1
+
+defaults write ~/Library/Preferences/ByHost/com.apple.controlcenter BatteryShowPercentage -bool true
+defaults write com.apple.controlcenter BatteryShowPercentage -bool true
+
+
+defaults write ~/Library/Preferences/ByHost/com.apple.controlcenter UserSwitcher -int 2
+defaults write com.apple.controlcenter "NSStatusItem Visible UserSwitcher" -int 1
+
+
+
+echo "Is this the first time you've run this script?"
+read REPLY
+
+if [[ "$REPLY" =~ ^[Yy]$ ]]
+then
+
+  echo "Removing unwanted dock icons"
+  declare -a idsToRemove=( 
+    "com.apple.launchpad.launcher"
+    "com.apple.Notes"
+    "com.apple.iChat"
+    "com.apple.MobileSMS"
+    "com.apple.mail"
+    "com.apple.Maps"
+    "com.apple.Photos"
+    "com.apple.FaceTime"
+    "com.apple.iCal"
+    "com.apple.AddressBook"
+    "com.apple.reminders"
+    "com.apple.Notes"
+    "com.apple.TV"
+    "com.apple.Music"
+    "com.apple.podcasts"
+    "com.apple.iTunes"
+    "com.apple.iBooksX"
+    "com.apple.AppStore"
+    "com.apple.systempreferences"
+    "com.apple.Terminal"
+  )
+
+  plistBuddy='/usr/libexec/PlistBuddy'
+  dockPlistPath="$HOME/Library/Preferences/com.apple.dock.plist"
+  echo $idsToRemove
+  for appIDToRemove in "${idsToRemove[@]}"; do
+    iconsIndexes=`defaults read com.apple.dock persistent-apps | grep tile-type | awk '/file-tile/ {print NR}'`
+    for i in $iconsIndexes; do
+      plistPath="persistent-apps:$[$i-1]"
+      appID=`$plistBuddy -c "Print $plistPath:tile-data:bundle-identifier" $dockPlistPath`
+
+      if [[ $appID =~ $appIDToRemove ]]; then
+        echo $appIDToRemove" is to be removed!"
+        $plistBuddy -c "Delete $plistPath" $dockPlistPath
+        iconsIndexes=iconsIndexes-1
+
+      fi
+    done
+  done
+
+  defaults write com.apple.dock show-recents -bool false;
+  defaults write com.apple.dock enable-spring-load-actions-on-all-items -bool true;ok
+
+  running "Remove the auto-hiding Dock delay"
+  defaults write com.apple.dock autohide-delay -float 0;ok
+
+  running "Remove the animation when hiding/showing the Dock"
+  defaults write com.apple.dock autohide-time-modifier -float 0.5;ok
+
+  running "Automatically hide and show the Dock"
+  defaults write com.apple.dock autohide -bool true;ok
+
+  defaults write com.apple.dock tilesize -int 48
+
+
+  # Possible values:
+  #  0: no-op
+  #  2: Mission Control
+  #  3: Show application windows
+  #  4: Desktop
+  #  5: Start screen saver
+  #  6: Disable screen saver
+  #  7: Dashboard
+  # 10: Put display to sleep
+  # 11: Launchpad
+  # 12: Notification Center
+
+  running "Top right screen corner → Mission Control"
+  defaults write com.apple.dock wvous-tr-corner -int 2
+  defaults write com.apple.dock wvous-tr-modifier -int 0;ok
+
+  running "Bottom right screen corner → Launchpad"
+  defaults write com.apple.dock wvous-br-corner -int 11
+  defaults write com.apple.dock wvous-br-modifier -int 0;ok
+
+  killall Dock
+  rm -rf /private/var/folders/*/*/-Caches-/com.apple.dock.iconcache
+  killall Dock
+
+  # echo " Set computer name to $HOSTNAME (as done via System Preferences → Sharing)"
+  # sudo scutil --set ComputerName $HOSTNAME
+  # sudo scutil --set HostName $HOSTNAME
+  # sudo scutil --set LocalHostName $HOSTNAME
+  # sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string $HOSTNAME
+  
+
+  defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
+  defaults write com.apple.AppleMultitouchTrackpad TrackpadCornerSecondaryClick -int 2
+
+  defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
+  defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad ActuationStrength -int 0
+
+  # running "Trackpad: map right corner to right-click"
+  defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadCornerSecondaryClick -int 2
+  defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadRightClick -bool true
+
+
+
+  
+
+
+
+  defaults -currentHost write NSGlobalDomain com.apple.trackpad.trackpadCornerClickBehavior -int 1
+  defaults -currentHost write NSGlobalDomain com.apple.trackpad.enableSecondaryClick -bool true;ok
+  
+  running "Disable press-and-hold for keys in favor of key repeat"
+  defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false;ok
+  
+  running "Set a blazingly fast keyboard repeat rate"
+  defaults write NSGlobalDomain KeyRepeat -int 2
+  defaults write NSGlobalDomain InitialKeyRepeat -int 50;ok
+
+  echo "  › Show battery percent"
+  defaults write com.apple.menuextra.battery ShowPercent YES
+
+  echo "set default screenshots folder to ~/Pictures/Screenshots"
+  mkdir ~/Pictures/Screenshots/
+  defaults write com.apple.screencapture location ~/Pictures/Screenshots/;killall SystemUIServer
+
+
 else
-    echo "Homebrew already installed!"
+  echo "Done!"
 fi
-
-# Install XCode Command Line Tools
-echo 'Checking to see if XCode Command Line Tools are installed...'
-brew config
-
-# Updating Homebrew.
-echo "Updating Homebrew..."
-brew update
-
-# Upgrade any already-installed formulae.
-echo "Upgrading Homebrew..."
-brew upgrade
-
-# Install iTerm2
-echo "Installing iTerm2..."
-brew cask install iterm2
-
-# Update the Terminal
-# Install oh-my-zsh
-echo "Installing oh-my-zsh..."
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-echo "Need to logout now to start the new SHELL..."
-logout
-
-# Install Git
-echo "Installing Git..."
-brew install git
-
-# Install Powerline fonts
-echo "Installing Powerline fonts..."
-git clone https://github.com/powerline/fonts.git
-cd fonts || exit
-sh -c ./install.sh
-
-# Install ruby
-if test ! "$(which ruby)"; then
-    echo "Installing Ruby..."
-    brew install ruby
-    echo "Adding the brew ruby path to shell config..."
-    echo 'export PATH='"/usr/local/opt/ruby/bin:$PATH" >>~/.bash_profile
-else
-    echo "Ruby already installed!"
-fi
-
-# Install some CTF tools; see https://github.com/ctfs/write-ups.
-brew install nmap
-
-# Install other useful binaries.
-brew install speedtest_cli
-
-# Core casks
-brew cask install --appdir="/Applications" alfred
-
-# Development tool casks
-brew cask install --appdir="/Applications" visual-studio-code
-
-# Misc casks
-brew cask install --appdir="/Applications" firefox
-brew cask install --appdir="/Applications" slack
-brew cask install --appdir="/Applications" 1password
-brew cask install --appdir="/Applications" caffeine
-
-# Remove outdated versions from the cellar.
-echo "Running brew cleanup..."
-brew cleanup
-echo "You're done!"
