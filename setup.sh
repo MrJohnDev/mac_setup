@@ -121,7 +121,7 @@ if [[ "$REPLY" =~ ^[Yy]$ ]]
 then
 
   echo "Removing unwanted dock icons"
-  declare -a idsToRemove=( 
+  declare -a idsToRemove=(
     "com.apple.launchpad.launcher"
     "com.apple.Notes"
     "com.apple.iChat"
@@ -206,7 +206,7 @@ then
   # sudo scutil --set HostName $HOSTNAME
   # sudo scutil --set LocalHostName $HOSTNAME
   # sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string $HOSTNAME
-  
+
 
   defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
   defaults write com.apple.AppleMultitouchTrackpad TrackpadCornerSecondaryClick -int 2
@@ -220,16 +220,16 @@ then
 
 
 
-  
+
 
 
 
   defaults -currentHost write NSGlobalDomain com.apple.trackpad.trackpadCornerClickBehavior -int 1
   defaults -currentHost write NSGlobalDomain com.apple.trackpad.enableSecondaryClick -bool true;ok
-  
+
   running "Disable press-and-hold for keys in favor of key repeat"
   defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false;ok
-  
+
   running "Set a blazingly fast keyboard repeat rate"
   defaults write NSGlobalDomain KeyRepeat -int 2
   defaults write NSGlobalDomain InitialKeyRepeat -int 50;ok
@@ -242,6 +242,105 @@ then
   defaults write com.apple.screencapture location ~/Pictures/Screenshots/;killall SystemUIServer
 
 
+
+
+
+  echo "Installing xcode-stuff"
+  xcode-select --install
+  # Check for Homebrew,
+  # Install if we don't have it
+  if test ! $(which brew); then
+    echo "Installing homebrew..."
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  fi
+
+  # Update homebrew recipes
+  echo "Updating homebrew..."
+  brew update
+
+  echo "Cleaning up brew"
+  brew cleanup
+
+  echo "Installing homebrew cask"
+  brew tap homebrew/cask
+
+  # for Java 8
+  brew tap homebrew/versions
+
+  #Install Zsh & Oh My Zsh
+  echo "Installing Oh My ZSH..."
+  curl -L http://install.ohmyz.sh | sh
+
+  echo "Setting up Oh My Zsh theme..."
+  git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
+
+  echo "Setting up Oh My Zsh fonts..."
+  brew tap homebrew/cask-fonts
+  brew install --cask font-hack-nerd-font
+
+  echo "Setting up Zsh plugins..."
+  cd ~/.oh-my-zsh/custom/plugins
+  git clone git://github.com/zsh-users/zsh-syntax-highlighting.git
+
+  echo "Setting ZSH as shell..."
+  chsh -s /bin/zsh
+
+
+
+
+
+
+
 else
-  echo "Done!"
+
+
+# Apps
+  apps=(
+    android-studio
+    android-SDK
+    atom
+    figma
+    firefox
+    google-chrome
+    spotify
+    iterm2
+    telegram
+    virtualbox
+    vlc
+    visual-studio-code
+  )
+
+  # quick look plugins (https://github.com/sindresorhus/quick-look-plugins)
+  quicklookplugins=(
+    qlmarkdown
+    quicklook-json
+    qlprettypatch
+    quicklookapk
+    qlimagesize
+    webpquicklook
+  )
+
+  # Install apps to /Applications
+  # Default is: /Users/$user/Applications
+  echo "installing apps with Cask..."
+  brew install --cask --appdir="/Applications" ${apps[@]}
+
+  echo "installing quick look plugins with Cask..."
+  brew install --cask --appdir="/Applications" ${quicklookplugins[@]}
+
+  # flutter IOS stuff
+  brew install --HEAD libimobiledevice
+  brew install ideviceinstaller ios-deploy cocoapods
+  pod setup
+
+  brew cleanup
+  brew cleanup -s
+
+  # install flutter
+  if [[ ! -e ~/Developer/Flutter/flutter ]]; then
+     git clone -b stable https://github.com/flutter/flutter.git ~/Developer/Flutter/flutter
+     export PATH="~/Developer/Flutter/flutter/bin:$PATH"
+     cd ~/Developer/Flutter/flutter
+     flutter doctor
+  fi
 fi
