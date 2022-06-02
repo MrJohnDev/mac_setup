@@ -328,13 +328,8 @@ else
   echo "installing quick look plugins with Cask..."
   brew install --cask --appdir="/Applications" ${quicklookplugins[@]}
 
-  # flutter IOS stuff
-  brew install --HEAD libimobiledevice
-  brew install ideviceinstaller ios-deploy cocoapods
-  pod setup
-
   brew cleanup
-  brew cleanup -s
+  rm -rf $(brew --cache)
 
   # install flutter
   if [[ ! -e ~/Developer/Flutter/flutter ]]; then
