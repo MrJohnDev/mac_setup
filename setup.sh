@@ -301,6 +301,7 @@ else
     atom
     figma
     firefox
+    github
     google-chrome
     spotify
     iterm2
