@@ -16,6 +16,9 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 # echo "Write MacBook Name and press enter"
 # read HOSTNAME
 
+# Disable the sound effects on boot
+nvram SystemAudioVolume=" "
+
 ################################################################################
 # Trackpad                                                                     #
 ################################################################################
