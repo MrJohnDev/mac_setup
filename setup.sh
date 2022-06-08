@@ -26,7 +26,7 @@ defaults write com.apple.AppleMultitouchTrackpad FirstClickThreshold -int 0
 defaults write com.apple.AppleMultitouchTrackpad SecondClickThreshold -int 0
 
 defaults write com.apple.AppleMultitouchTrackpad TrackpadCornerSecondaryClick -int 0
-defaults write com.apple.AppleMultitouchTrackpad TrackpadRightClick -bool false
+defaults write com.apple.AppleMultitouchTrackpad TrackpadRightClick -bool true
 defaults write com.apple.AppleMultitouchTrackpad ActuationStrength -bool false
 defaults write com.apple.AppleMultitouchTrackpad ForceSuppressed -bool false
 
@@ -35,7 +35,7 @@ defaults write com.apple.dock showLaunchpadGestureEnabled -bool true
 
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadCornerSecondaryClick -int 0
-defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadRightClick -bool false
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadRightClick -bool true
 
 
 
@@ -102,6 +102,16 @@ defaults write com.apple.finder _FXSortFoldersFirstOnDesktop -bool true
 
 
 
+# Use list view in all Finder windows by default
+# Four-letter codes for the other view modes: `icnv`, `clmv`, `glyv`
+defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
+
+# Enable stacks (group similar objects on e.g. desktop)
+defaults write com.apple.finder.DesktopViewSettings.GroupBy -string "Kind"
+defaults write com.apple.finder.DesktopViewSettings.IconViewSettings.arrangeBy -string "dateAdded"
+defaults write com.apple.finder.FXPreferredGroupBy -string "Kind"
+
+
 defaults write ~/Library/Preferences/ByHost/com.apple.controlcenter Battery -int 2
 defaults write com.apple.controlcenter "NSStatusItem Visible Battery" -int 1
 
@@ -164,6 +174,16 @@ then
 
   defaults write com.apple.dock show-recents -bool false;
   defaults write com.apple.dock enable-spring-load-actions-on-all-items -bool true;ok
+
+
+
+
+
+  echo "Enable spring loading for directories"
+  defaults write NSGlobalDomain com.apple.springing.enabled -bool true
+
+  echo "Remove the spring loading delay for directories"
+  defaults write NSGlobalDomain com.apple.springing.delay -float 0
 
   running "Remove the auto-hiding Dock delay"
   defaults write com.apple.dock autohide-delay -float 0;ok
