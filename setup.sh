@@ -17,7 +17,7 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 # read HOSTNAME
 
 # Disable the sound effects on boot
-nvram SystemAudioVolume=" "
+sudo nvram SystemAudioVolume=" "
 
 ################################################################################
 # Trackpad                                                                     #
@@ -188,13 +188,13 @@ then
   echo "Remove the spring loading delay for directories"
   defaults write NSGlobalDomain com.apple.springing.delay -float 0
 
-  running "Remove the auto-hiding Dock delay"
+  echo "Remove the auto-hiding Dock delay"
   defaults write com.apple.dock autohide-delay -float 0;ok
 
-  running "Remove the animation when hiding/showing the Dock"
+  echo "Remove the animation when hiding/showing the Dock"
   defaults write com.apple.dock autohide-time-modifier -float 0.5;ok
 
-  running "Automatically hide and show the Dock"
+  echo "Automatically hide and show the Dock"
   defaults write com.apple.dock autohide -bool true;ok
 
   defaults write com.apple.dock tilesize -int 48
@@ -212,11 +212,11 @@ then
   # 11: Launchpad
   # 12: Notification Center
 
-  running "Top right screen corner → Mission Control"
+  echo "Top right screen corner → Mission Control"
   defaults write com.apple.dock wvous-tr-corner -int 2
   defaults write com.apple.dock wvous-tr-modifier -int 0;ok
 
-  running "Bottom right screen corner → Launchpad"
+  echo "Bottom right screen corner → Launchpad"
   defaults write com.apple.dock wvous-br-corner -int 11
   defaults write com.apple.dock wvous-br-modifier -int 0;ok
 
@@ -250,10 +250,10 @@ then
   defaults -currentHost write NSGlobalDomain com.apple.trackpad.trackpadCornerClickBehavior -int 1
   defaults -currentHost write NSGlobalDomain com.apple.trackpad.enableSecondaryClick -bool true;ok
 
-  running "Disable press-and-hold for keys in favor of key repeat"
+  echo "Disable press-and-hold for keys in favor of key repeat"
   defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false;ok
 
-  running "Set a blazingly fast keyboard repeat rate"
+  echo "Set a blazingly fast keyboard repeat rate"
   defaults write NSGlobalDomain KeyRepeat -int 2
   defaults write NSGlobalDomain InitialKeyRepeat -int 50;ok
 
@@ -355,11 +355,16 @@ else
   brew cleanup
   rm -rf $(brew --cache)
 
+
+
+
+
   # install flutter
-  if [[ ! -e ~/Developer/Flutter/flutter ]]; then
-     git clone -b stable https://github.com/flutter/flutter.git ~/Developer/Flutter/flutter
-     export PATH="~/Developer/Flutter/flutter/bin:$PATH"
-     cd ~/Developer/Flutter/flutter
+  if [[ ! -e ~/Developer/Flutter ]]; then
+     git clone -b stable https://github.com/flutter/flutter.git ~/Developer/Flutter
+     export PATH="~/Developer/Flutter/bin:$PATH"
+     echo export PATH=~/Developer/Flutter/bin:\$PATH >> ~/.zshrc
+     cd ~/Developer/Flutter/bin
      flutter doctor
   fi
 fi
