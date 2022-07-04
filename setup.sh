@@ -329,7 +329,9 @@ then
   curl -L http://install.ohmyz.sh | sh
 
   echo "Setting up Oh My Zsh theme..."
-  git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
+  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+  echo '\nZSH_THEME="powerlevel10k/powerlevel10k"' >>~/.zshrc
+  touch .hushlogin
 
   echo "Setting up Oh My Zsh fonts..."
   brew tap homebrew/cask-fonts
