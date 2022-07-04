@@ -11,6 +11,40 @@ sudo -v
 echo " Keep-alive: update existing sudo time stamp until .osx has finished"
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
+
+
+export ANDROID_HOME="$HOME/Library/Android/sdk"
+echo export ANDROID_HOME=\$HOME/Library/Android/sdk >> ~/.zshrc
+
+# Make a symbolic link from the default Homebrew location to $ANDROID_HOME.
+link_sdk() {
+    # We only do this if Android Studio _isn't_ installed.
+    # If it is, we use Android Studio to manage the Android SDK
+    if [ ! -d "~/Library/Android/" ]; then
+        # Create the directory to store the Andrid SDK.
+        mkdir -p "$ANDROID_HOME"
+
+        # Get the directory where Homebrew installed the Android SDK.
+
+        brew install --cask homebrew/cask-versions/temurin8
+        brew install --cask android-commandlinetools
+
+        version_dir=`ls /usr/local/Caskroom/android-sdk/ | head -n1`
+
+
+
+        ln -s /usr/local/Caskroom/android-sdk/"$version_dir"/* "$ANDROID_HOME"
+
+        echo export ANDROID_HOME=\$HOME/Library/Android/sdk>> ~/.zshrc
+        echo export PATH=\$PATH:\$HOME/Library/Android/sdk/platform-tools>> ~/.zshrc
+        echo export PATH=\$PATH:\$HOME/Library/Android/sdk/tools>> ~/.zshrc
+        echo export PATH=\$PATH:\$HOME/Library/Android/sdk/tools/bin>> ~/.zshrc
+
+
+    fi
+}
+
+link_sdk
 # Still changing this for my own laptop, but this one seemed to have the best bones.
 
 # echo "Write MacBook Name and press enter"
@@ -320,7 +354,6 @@ else
 # Apps
   apps=(
     android-studio
-    android-SDK
     atom
     figma
     firefox
@@ -362,8 +395,8 @@ else
   # install flutter
   if [[ ! -e ~/Developer/Flutter ]]; then
      git clone -b stable https://github.com/flutter/flutter.git ~/Developer/Flutter
-     export PATH="~/Developer/Flutter/bin:$PATH"
-     echo export PATH=~/Developer/Flutter/bin:\$PATH >> ~/.zshrc
+     export PATH="$HOME/Developer/Flutter/bin:$PATH"
+     echo export PATH=\$HOME/Developer/Flutter/bin:\$PATH >> ~/.zshrc
      cd ~/Developer/Flutter/bin
      flutter doctor
   fi
