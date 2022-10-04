@@ -355,16 +355,13 @@ else
 
 # Apps
   apps=(
-    android-studio
     atom
     figma
     firefox
     github
     google-chrome
-    spotify
     iterm2
     telegram
-    virtualbox
     vlc
     visual-studio-code
   )
