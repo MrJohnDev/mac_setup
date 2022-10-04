@@ -382,10 +382,10 @@ else
   # Install apps to /Applications
   # Default is: /Users/$user/Applications
   echo "installing apps with Cask..."
-  brew install --cask --appdir="/Applications" ${apps[@]}
+  brew install --cask --appdir="/Applications" ${apps[@]} --force
 
   echo "installing quick look plugins with Cask..."
-  brew install --cask --appdir="/Applications" ${quicklookplugins[@]}
+  brew install --cask --appdir="/Applications" ${quicklookplugins[@]}  --force
 
   brew cleanup
   rm -rf $(brew --cache)
